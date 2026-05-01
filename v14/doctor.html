@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sukary — بورتال الدكتور</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:#1a6b8a;--primary-dark:#0d4a63;--primary-light:#e3f4f9;
+  --green:#27ae60;--green-light:#eafaf1;
+  --orange:#e67e22;--orange-light:#fef3e7;
+  --red:#e74c3c;--red-light:#fdecea;
+  --purple:#8e44ad;--purple-light:#f5eef8;
+  --yellow:#f1c40f;--yellow-light:#fefde7;
+  --teal:#16a085;--teal-light:#e8f8f5;
+  --doctor:#0d4a63;--doctor-accent:#7fd8f5;
+  --bg:#f0f4f8;--card:#fff;--border:#dce6ef;
+  --text:#1a2733;--muted:#6b8599;
+  --sidebar:260px;--nav:62px;
+  --shadow:0 2px 12px rgba(26,107,138,.10);
+  --shadow-lg:0 8px 32px rgba(26,107,138,.18);
+  --r:14px;--r-sm:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ══ LOGIN SCREEN ══ */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#0d4a63 0%,#1a6b8a 50%,#16a085 100%);display:flex;align-items:center;justify-content:center;z-index:999}
+.login-box{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo .icon{font-size:48px;display:block;margin-bottom:8px}
+.login-logo h1{font-size:22px;font-weight:900;color:var(--primary-dark)}
+.login-logo p{font-size:12px;color:var(--muted);margin-top:2px}
+.login-tabs{display:flex;background:var(--bg);border-radius:var(--r-sm);padding:3px;margin-bottom:22px;gap:3px}
+.ltab{flex:1;padding:8px;border:none;background:none;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;color:var(--muted);border-radius:6px;cursor:pointer;transition:all .15s}
+.ltab.active{background:#fff;color:var(--primary-dark);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.lform{display:none}.lform.active{display:block}
+.l-field{margin-bottom:14px}
+.l-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+.l-field input,.l-field select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:'Cairo',sans-serif;font-size:13px;color:var(--text);direction:rtl}
+.l-field input:focus,.l-field select:focus{outline:none;border-color:var(--primary)}
+.l-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.l-btn{width:100%;padding:12px;background:var(--primary-dark);color:#fff;border:none;border-radius:var(--r-sm);font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .15s;margin-top:4px}
+.l-btn:hover{background:#0a3a4f;transform:translateY(-1px)}
+.l-err{color:var(--red);font-size:12px;font-weight:600;margin-top:8px;min-height:18px;text-align:center}
+
+/* ══ APP SHELL ══ */
+#app{display:none}
+.topbar{height:var(--nav);background:var(--doctor);display:flex;align-items:center;padding:0 22px;gap:14px;position:fixed;top:0;right:0;left:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.2)}
+.logo{font-size:18px;font-weight:900;color:#fff;display:flex;align-items:center;gap:8px}
+.logo span{color:var(--doctor-accent)}
+.logo-badge{background:rgba(127,216,245,.2);border:1px solid rgba(127,216,245,.4);color:var(--doctor-accent);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.5px}
+.top-doc{margin-right:auto;color:#b0d8e8;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.top-doc strong{color:#fff}
+.btn-logout{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#b0d8e8;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;cursor:pointer;flex-shrink:0;transition:all .15s}
+.btn-logout:hover{background:rgba(255,255,255,.2);color:#fff}
+
+/* ══ SIDEBAR ══ */
+.sidebar{width:var(--sidebar);background:var(--card);position:fixed;top:var(--nav);right:0;bottom:0;border-left:1px solid var(--border);overflow-y:auto;z-index:90;padding:14px 0 30px;box-shadow:-2px 0 12px rgba(0,0,0,.06)}
+.s-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;padding:10px 16px 4px}
+.nav-btn{display:flex;align-items:center;gap:10px;width:calc(100% - 12px);padding:10px 16px;border:none;background:none;border-radius:var(--r-sm);font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;text-align:right;margin:1px 6px}
+.nav-btn:hover{background:var(--primary-light);color:var(--primary)}
+.nav-btn.active{background:var(--primary-dark);color:#fff}
+.nav-icon{font-size:15px;flex-shrink:0}
+.patient-count{margin-right:auto;background:var(--primary-light);color:var(--primary);font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px}
+
+/* ══ MAIN ══ */
+.main{margin-top:var(--nav);margin-right:var(--sidebar);padding:26px 28px;min-height:calc(100vh - var(--nav))}
+.page{display:none}.page.active{display:block}
+.page-title{font-size:20px;font-weight:900;color:var(--primary-dark);margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.page-desc{color:var(--muted);font-size:12.5px;margin-bottom:20px}
+
+/* ══ CARDS ══ */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:18px}
+.card-header{padding:13px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--primary-light) 0%,#fff 100%)}
+.card-title{font-size:14px;font-weight:800;color:var(--primary-dark);display:flex;align-items:center;gap:8px}
+.card-body{padding:20px}
+
+/* ══ STATS ══ */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--card);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden;transition:transform .15s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%}
+.sc-blue::before{background:var(--primary)}.sc-green::before{background:var(--green)}.sc-orange::before{background:var(--orange)}.sc-red::before{background:var(--red)}
+.stat-label{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+.stat-value{font-size:28px;font-weight:900;margin:3px 0 2px;line-height:1}
+.sc-blue .stat-value{color:var(--primary)}.sc-green .stat-value{color:var(--green)}.sc-orange .stat-value{color:var(--orange)}.sc-red .stat-value{color:var(--red)}
+.stat-sub{font-size:11px;color:var(--muted)}
+
+/* ══ PATIENTS LIST ══ */
+.patient-list{display:flex;flex-direction:column;gap:10px}
+.patient-row{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s;position:relative}
+.patient-row:hover{border-color:var(--primary);box-shadow:var(--shadow);transform:translateY(-1px)}
+.patient-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--teal));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:#fff;font-weight:900}
+.patient-info{flex:1;min-width:0}
+.patient-name{font-size:14px;font-weight:800;color:var(--text)}
+.patient-meta{font-size:11.5px;color:var(--muted);margin-top:2px}
+.patient-stats{display:flex;gap:14px;flex-shrink:0}
+.p-stat{text-align:center}
+.p-stat-val{font-size:16px;font-weight:900;line-height:1}
+.p-stat-lbl{font-size:10px;color:var(--muted);font-weight:600}
+.sugar-badge{font-size:13px;font-weight:800;padding:4px 12px;border-radius:20px}
+.s-low{background:var(--red-light);color:var(--red)}.s-normal{background:var(--green-light);color:var(--green)}.s-high{background:var(--yellow-light);color:#c0820a}.s-vhigh{background:var(--red-light);color:var(--red)}
+.patient-actions{display:flex;gap:6px}
+.alert-dot{width:8px;height:8px;border-radius:50%;background:var(--red);position:absolute;top:10px;left:10px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ══ ADD PATIENT ══ */
+.add-patient-form{background:linear-gradient(135deg,#e8f4fd,#fff);border:2px dashed var(--primary);border-radius:var(--r);padding:20px;display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.add-patient-form input{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:'Cairo',sans-serif;font-size:13px;direction:rtl}
+.add-patient-form input:focus{outline:none;border-color:var(--primary)}
+
+/* ══ PATIENT DETAIL ══ */
+.back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--primary);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;padding:0;margin-bottom:16px}
+.back-btn:hover{color:var(--primary-dark)}
+.patient-header{background:linear-gradient(135deg,var(--primary-dark),#1a6b8a);border-radius:var(--r);padding:22px 24px;color:#fff;margin-bottom:20px;display:flex;align-items:center;gap:18px}
+.ph-avatar{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.ph-info h2{font-size:20px;font-weight:900}
+.ph-info p{font-size:12px;opacity:.8;margin-top:3px}
+.ph-tags{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.ph-tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px}
+.detail-tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:2px solid var(--border);padding-bottom:0}
+.dtab{padding:10px 18px;border:none;background:none;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.dtab:hover{color:var(--primary)}
+.dtab.active{color:var(--primary-dark);border-bottom-color:var(--primary-dark)}
+.dtab-panel{display:none}.dtab-panel.active{display:block}
+
+/* ══ TABLES ══ */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead{background:var(--primary-dark)}
+thead th{padding:10px 12px;color:#fff;font-weight:700;text-align:right;white-space:nowrap;font-size:11.5px}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:hover{background:var(--primary-light)}
+tbody td{padding:9px 12px;vertical-align:middle}
+
+/* ══ FORMS ══ */
+.form-row{display:grid;gap:14px;margin-bottom:14px}
+.form-row-2{grid-template-columns:1fr 1fr}
+.form-row-3{grid-template-columns:1fr 1fr 1fr}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:4px}
+label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+input[type=text],input[type=number],input[type=date],input[type=tel],select,textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:'Cairo',sans-serif;font-size:13px;color:var(--text);background:#fff;transition:border .15s;direction:rtl;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,107,138,.10)}
+textarea{resize:vertical;min-height:70px}
+
+/* ══ BUTTONS ══ */
+.btn{padding:9px 20px;border:none;border-radius:var(--r-sm);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--green);color:#fff}.btn-success:hover{background:#1e8449}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{background:#c0392b}
+.btn-warning{background:var(--orange);color:#fff}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border)}.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:6px 13px;font-size:12px}
+.btn-xs{padding:4px 10px;font-size:11px}
+.btn-group{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+
+/* ══ NOTES ══ */
+.note-list{display:flex;flex-direction:column;gap:10px}
+.note-item{border-radius:var(--r-sm);padding:13px 16px;border-right:4px solid;position:relative}
+.note-general{background:#f8fafc;border-right-color:var(--primary)}
+.note-diet{background:var(--green-light);border-right-color:var(--green)}
+.note-insulin{background:var(--orange-light);border-right-color:var(--orange)}
+.note-warning{background:var(--red-light);border-right-color:var(--red)}
+.note-lab{background:var(--purple-light);border-right-color:var(--purple)}
+.note-text{font-size:13px;font-weight:600;line-height:1.6}
+.note-meta{font-size:11px;color:var(--muted);margin-top:5px}
+.note-del{position:absolute;top:10px;left:10px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:15px;opacity:.5;transition:opacity .15s}
+.note-del:hover{opacity:1;color:var(--red)}
+.note-type-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-right:6px}
+.nt-general{background:var(--primary-light);color:var(--primary)}
+.nt-diet{background:var(--green-light);color:var(--green)}
+.nt-insulin{background:var(--orange-light);color:var(--orange)}
+.nt-warning{background:var(--red-light);color:var(--red)}
+.nt-lab{background:var(--purple-light);color:var(--purple)}
+
+/* ══ CHARTS ══ */
+.chart-wrap{display:flex;align-items:flex-end;gap:4px;height:120px;padding:8px 0 0}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:4px 4px 0 0;min-height:3px;transition:height .4s cubic-bezier(.34,1.56,.64,1);cursor:pointer}
+.bar:hover{filter:brightness(1.15)}
+.bar-lbl{font-size:9px;color:var(--muted);font-weight:600;white-space:nowrap}
+.bar-val{font-size:9px;font-weight:800}
+
+/* ══ BADGES ══ */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.b-low{background:var(--red-light);color:var(--red)}.b-normal{background:var(--green-light);color:var(--green)}.b-high{background:var(--yellow-light);color:#c0820a}.b-vhigh{background:var(--red-light);color:var(--red)}
+
+/* ══ GOALS FORM ══ */
+.goals-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.goal-box{background:var(--bg);border-radius:var(--r-sm);padding:14px;border:1.5px solid var(--border)}
+.goal-box label{display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.goal-box input{padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;text-align:center;width:100%;color:var(--primary-dark)}
+
+/* ══ ALERTS ══ */
+.alert{padding:12px 16px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px}
+.alert-warning{background:var(--yellow-light);color:#7d4e00;border-right:4px solid var(--yellow)}
+.alert-danger{background:var(--red-light);color:#7b1010;border-right:4px solid var(--red)}
+.alert-success{background:var(--green-light);color:#1a5e36;border-right:4px solid var(--green)}
+.alert-info{background:var(--primary-light);color:var(--primary-dark);border-right:4px solid var(--primary)}
+
+/* ══ EMPTY STATES ══ */
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty .e-icon{font-size:48px;margin-bottom:10px}
+.empty p{font-size:13px;font-weight:600}
+
+/* ══ LOADING ══ */
+.loader{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ══ MODAL ══ */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:var(--r);width:90%;max-width:680px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+.modal-title{font-size:15px;font-weight:800;color:var(--primary-dark)}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1;padding:4px}
+.modal-body{padding:22px}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:#fafafa}
+
+/* ══ TOAST ══ */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a2733;color:#fff;padding:12px 22px;border-radius:30px;font-size:13px;font-weight:700;z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .sidebar{display:none}
+  .main{margin-right:0;padding:18px 14px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .goals-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN SCREEN ══════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="icon">🩺</span>
+      <h1>Sukary — بورتال الدكتور</h1>
+      <p>نظام متابعة مرضى السكري</p>
+    </div>
+
+    <div class="login-tabs">
+      <button class="ltab active" onclick="switchLTab('login')">دخول</button>
+      <button class="ltab" onclick="switchLTab('register')">حساب جديد</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="lform active" id="lf-login">
+      <div class="l-field">
+        <label>اسم المستخدم</label>
+        <input type="text" id="l-username" placeholder="doctor_ahmed" autocomplete="username">
+      </div>
+      <div class="l-field">
+        <label>الباسورد</label>
+        <input type="password" id="l-password" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="l-btn" onclick="doLogin()">🔑 دخول</button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="lform" id="lf-register">
+      <div class="l-row">
+        <div class="l-field">
+          <label>الاسم الكامل</label>
+          <input type="text" id="r-name" placeholder="د. أحمد محمد">
+        </div>
+        <div class="l-field">
+          <label>اسم المستخدم</label>
+          <input type="text" id="r-username" placeholder="dr_ahmed">
+        </div>
+      </div>
+      <div class="l-row">
+        <div class="l-field">
+          <label>التخصص</label>
+          <input type="text" id="r-specialty" placeholder="باطنة — سكري وغدد">
+        </div>
+        <div class="l-field">
+          <label>العيادة / المستشفى</label>
+          <input type="text" id="r-clinic" placeholder="مستشفى الشفاء">
+        </div>
+      </div>
+      <div class="l-row">
+        <div class="l-field">
+          <label>رقم الموبايل</label>
+          <input type="tel" id="r-phone" placeholder="01xxxxxxxxx">
+        </div>
+        <div class="l-field">
+          <label>الباسورد</label>
+          <input type="password" id="r-password" placeholder="6 أحرف على الأقل">
+        </div>
+      </div>
+      <button class="l-btn" onclick="doRegister()">✅ إنشاء حساب</button>
+    </div>
+
+    <div class="l-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ══════════ APP SHELL ══════════ -->
+<div id="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">🩺 <span>Sukary</span> <span class="logo-badge">DOCTOR</span></div>
+  <div class="top-doc">مرحباً، <strong id="topDocName">دكتور</strong></div>
+  <button class="btn-logout" onclick="doLogout()">خروج 🚪</button>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="s-label">الرئيسية</div>
+  <button class="nav-btn active" onclick="nav('dashboard')"><span class="nav-icon">📊</span> لوحة التحكم</button>
+
+  <div class="s-label">المرضى</div>
+  <button class="nav-btn" onclick="nav('patients')"><span class="nav-icon">👥</span> قايمة المرضى <span class="patient-count" id="patientCountBadge">0</span></button>
+
+  <div class="s-label">التنبيهات</div>
+  <button class="nav-btn" onclick="nav('alerts')"><span class="nav-icon">⚠️</span> تنبيهات المرضى</button>
+
+  <div class="s-label">الحساب</div>
+  <button class="nav-btn" onclick="nav('profile')"><span class="nav-icon">👤</span> ملف الدكتور</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ══ DASHBOARD ══ -->
+<div class="page active" id="page-dashboard">
+  <div class="page-title">📊 لوحة التحكم</div>
+  <div class="page-desc" id="dashDesc">مرحباً بك في بورتال الدكتور</div>
+
+  <div class="stats-grid">
+    <div class="stat-card sc-blue">
+      <div class="stat-label">إجمالي المرضى</div>
+      <div class="stat-value" id="st-total">--</div>
+      <div class="stat-sub">مريض مسجل</div>
+    </div>
+    <div class="stat-card sc-red">
+      <div class="stat-label">يحتاجون متابعة</div>
+      <div class="stat-value" id="st-alerts">--</div>
+      <div class="stat-sub">قراءة خارج المعدل</div>
+    </div>
+    <div class="stat-card sc-orange">
+      <div class="stat-label">مرضى غير نشطين</div>
+      <div class="stat-value" id="st-inactive">--</div>
+      <div class="stat-sub">+7 أيام بدون تسجيل</div>
+    </div>
+    <div class="stat-card sc-green">
+      <div class="stat-label">مرضى ضمن الهدف</div>
+      <div class="stat-value" id="st-good">--</div>
+      <div class="stat-sub">متوسط 7 أيام طبيعي</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+    <!-- تنبيهات سريعة -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">⚠️ يحتاجون متابعة عاجلة</div>
+      </div>
+      <div class="card-body" id="urgentList">
+        <div class="loader"></div>
+      </div>
+    </div>
+    <!-- آخر نشاط -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🕒 آخر قراءات المرضى</div>
+      </div>
+      <div class="card-body" id="recentActivity">
+        <div class="loader"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PATIENTS ══ -->
+<div class="page" id="page-patients">
+  <div class="page-title">👥 قايمة المرضى</div>
+  <div class="page-desc">إدارة ومتابعة مرضاك</div>
+
+  <!-- Add Patient -->
+  <div class="add-patient-form">
+    <span style="font-size:20px">➕</span>
+    <input type="text" id="addPatientInput" placeholder="اكتب اسم مستخدم المريض في تطبيق سكري..." onkeydown="if(event.key==='Enter')linkPatient()">
+    <button class="btn btn-primary" onclick="linkPatient()">ربط مريض</button>
+  </div>
+
+  <div class="patient-list" id="patientList">
+    <div style="text-align:center;padding:30px"><div class="loader"></div></div>
+  </div>
+</div>
+
+<!-- ══ PATIENT DETAIL ══ -->
+<div class="page" id="page-patient-detail">
+  <button class="back-btn" onclick="nav('patients')">← العودة لقايمة المرضى</button>
+  <div id="patientDetailContent">
+    <div style="text-align:center;padding:40px"><div class="loader"></div></div>
+  </div>
+</div>
+
+<!-- ══ ALERTS ══ -->
+<div class="page" id="page-alerts">
+  <div class="page-title">⚠️ تنبيهات المرضى</div>
+  <div class="page-desc">مرضى يحتاجون تدخل طبي</div>
+  <div id="alertsList">
+    <div style="text-align:center;padding:30px"><div class="loader"></div></div>
+  </div>
+</div>
+
+<!-- ══ DOCTOR PROFILE ══ -->
+<div class="page" id="page-profile">
+  <div class="page-title">👤 ملف الدكتور</div>
+  <div class="page-desc">بياناتك الشخصية والمهنية</div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">🩺 معلومات الدكتور</div></div>
+    <div class="card-body">
+      <div class="form-row form-row-2">
+        <div class="form-group"><label>الاسم الكامل</label><input id="pf-name" type="text"></div>
+        <div class="form-group"><label>التخصص</label><input id="pf-specialty" type="text"></div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group"><label>العيادة / المستشفى</label><input id="pf-clinic" type="text"></div>
+        <div class="form-group"><label>رقم الموبايل</label><input id="pf-phone" type="tel"></div>
+      </div>
+      <div class="alert alert-info">⚠️ تغيير الباسورد: افتح الـ API مباشرة حالياً — سيتم إضافة هذه الخاصية قريباً.</div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="saveProfile()">💾 حفظ التغييرات</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ MODAL: ADD NOTE ══ -->
+<div class="modal-overlay" id="noteModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📝 إضافة توصية / ملاحظة</div>
+      <button class="modal-close" onclick="closeModal('noteModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom:14px">
+        <label>نوع التوصية</label>
+        <select id="noteType">
+          <option value="general">عامة</option>
+          <option value="diet">نظام غذائي</option>
+          <option value="insulin">تعليمات إنسولين</option>
+          <option value="warning">تحذير طبي</option>
+          <option value="lab">نتائج مختبر</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>الملاحظة / التوصية</label>
+        <textarea id="noteText" placeholder="اكتب توصيتك هنا..." style="min-height:100px"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('noteModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="submitNote()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: SET GOALS ══ -->
+<div class="modal-overlay" id="goalsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🎯 ضبط الأهداف العلاجية</div>
+      <button class="modal-close" onclick="closeModal('goalsModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-info" style="margin-bottom:18px">⚕️ هذه الأهداف ستظهر مباشرة في تطبيق المريض وتؤثر على التنبيهات.</div>
+      <div class="goals-grid" style="margin-bottom:16px">
+        <div class="goal-box"><label>صائم — الحد الأدنى</label><input type="number" id="g-fast-min" value="70"> <small style="color:var(--muted);font-size:10px">mg/dL</small></div>
+        <div class="goal-box"><label>صائم — الحد الأقصى</label><input type="number" id="g-fast-max" value="130"> <small style="color:var(--muted);font-size:10px">mg/dL</small></div>
+        <div class="goal-box"><label>بعد الأكل — الأقصى</label><input type="number" id="g-post-max" value="180"> <small style="color:var(--muted);font-size:10px">mg/dL</small></div>
+        <div class="goal-box"><label>تنبيه انخفاض</label><input type="number" id="g-low-alert" value="70"> <small style="color:var(--muted);font-size:10px">mg/dL</small></div>
+        <div class="goal-box"><label>تنبيه ارتفاع</label><input type="number" id="g-high-alert" value="250"> <small style="color:var(--muted);font-size:10px">mg/dL</small></div>
+        <div class="goal-box"><label>HbA1c المستهدف</label><input type="number" id="g-hba1c" step="0.1" placeholder="7.0"> <small style="color:var(--muted);font-size:10px">%</small></div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group"><label>النشاط الجسدي</label><select id="g-activity"><option value="">اختر</option><option>خامل</option><option>خفيف</option><option>معتدل</option><option>نشط</option></select></div>
+        <div class="form-group"><label>وزن الهدف (كجم)</label><input type="number" id="g-weight" step="0.1" placeholder="75"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('goalsModal')">إلغاء</button>
+      <button class="btn btn-success" onclick="submitGoals()">✅ حفظ الأهداف</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+const API_BASE = '/api/doctor.php';
+let doctor = null;
+let patients = [];
+let currentPatient = null;
+let currentPatientId = null;
+
+// ══════════════════════════════════════════════
+//  API HELPERS
+// ══════════════════════════════════════════════
+async function api(action, method='GET', body=null) {
+  const opts = { method, credentials: 'include', headers: {} };
+  if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+  const r = await fetch(`${API_BASE}?action=${action}`, opts);
+  const data = await r.json().catch(() => ({}));
+  return { ok: r.ok, status: r.status, data };
+}
+
+// ══════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════
+function switchLTab(tab) {
+  document.querySelectorAll('.ltab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.lform').forEach(f => f.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('lf-' + tab).classList.add('active');
+  document.getElementById('loginErr').textContent = '';
+}
+
+async function doLogin() {
+  const username = document.getElementById('l-username').value.trim();
+  const password = document.getElementById('l-password').value;
+  if (!username || !password) { showErr('أدخل اسم المستخدم والباسورد'); return; }
+  const { ok, data } = await api('login', 'POST', { username, password });
+  if (ok && data.ok) { doctor = data.doctor; startApp(); }
+  else showErr(data.error || 'حصل خطأ');
+}
+
+async function doRegister() {
+  const name      = document.getElementById('r-name').value.trim();
+  const username  = document.getElementById('r-username').value.trim();
+  const specialty = document.getElementById('r-specialty').value.trim();
+  const clinic    = document.getElementById('r-clinic').value.trim();
+  const phone     = document.getElementById('r-phone').value.trim();
+  const password  = document.getElementById('r-password').value;
+  if (!name || !username || !password) { showErr('الاسم واسم المستخدم والباسورد مطلوبين'); return; }
+  const { ok, data } = await api('register', 'POST', { name, username, specialty, clinic, phone, password });
+  if (ok && data.ok) { doctor = data.doctor; startApp(); }
+  else showErr(data.error || 'حصل خطأ');
+}
+
+async function doLogout() {
+  await api('logout', 'POST');
+  location.reload();
+}
+
+function showErr(msg) { document.getElementById('loginErr').textContent = msg; }
+
+// ══════════════════════════════════════════════
+//  APP INIT
+// ══════════════════════════════════════════════
+async function startApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = '';
+  document.getElementById('topDocName').textContent = doctor.name || 'دكتور';
+  await loadPatients();
+  renderDashboard();
+}
+
+async function checkSession() {
+  const { ok, data } = await api('me');
+  if (ok && data.id) { doctor = data; startApp(); }
+}
+
+// ══════════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════════
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const pg = document.getElementById('page-' + page);
+  if (pg) pg.classList.add('active');
+  const btn = [...document.querySelectorAll('.nav-btn')].find(b => b.onclick && b.onclick.toString().includes(`'${page}'`));
+  if (btn) btn.classList.add('active');
+
+  if (page === 'patients') renderPatients();
+  if (page === 'alerts') renderAlerts();
+  if (page === 'profile') loadProfile();
+}
+
+// ══════════════════════════════════════════════
+//  LOAD PATIENTS
+// ══════════════════════════════════════════════
+async function loadPatients() {
+  const { ok, data } = await api('patients');
+  if (ok) { patients = Array.isArray(data) ? data : []; }
+  document.getElementById('patientCountBadge').textContent = patients.length;
+}
+
+// ══════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════
+function renderDashboard() {
+  const total = patients.length;
+  document.getElementById('st-total').textContent = total;
+
+  const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  let alertCount = 0, inactiveCount = 0, goodCount = 0;
+  const urgentItems = [];
+  const recentItems = [];
+
+  patients.forEach(p => {
+    const avg = parseFloat(p.avg7);
+    const lastDate = p.last_date ? new Date(p.last_date) : null;
+    const isInactive = !lastDate || lastDate < sevenDaysAgo;
+    if (isInactive) inactiveCount++;
+
+    if (avg) {
+      if (avg >= 70 && avg <= 180) goodCount++;
+      else { alertCount++; urgentItems.push(p); }
+    } else if (!p.last_fasting) alertCount++;
+
+    recentItems.push(p);
+  });
+
+  document.getElementById('st-alerts').textContent   = alertCount;
+  document.getElementById('st-inactive').textContent = inactiveCount;
+  document.getElementById('st-good').textContent     = goodCount;
+  document.getElementById('dashDesc').textContent    = `مرحباً ${doctor.name || 'دكتور'} — عندك ${total} مريض مسجل`;
+
+  // Urgent list
+  const ul = document.getElementById('urgentList');
+  if (urgentItems.length === 0) {
+    ul.innerHTML = '<div class="empty"><div class="e-icon">✅</div><p>مفيش تنبيهات عاجلة دلوقتي</p></div>';
+  } else {
+    ul.innerHTML = urgentItems.slice(0,5).map(p => {
+      const avg = parseFloat(p.avg7);
+      const cls = !avg ? 'b-low' : avg > 250 ? 'b-vhigh' : avg > 180 ? 'b-high' : 'b-low';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openPatient(${p.id})">
+        <span style="font-size:20px">👤</span>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700">${p.name}</div><div style="font-size:11px;color:var(--muted)">${p.dtype === 'type1' ? 'النوع الأول' : 'النوع الثاني'}</div></div>
+        <span class="badge ${cls}">${avg ? avg.toFixed(0) + ' mg/dL' : 'لا قراءات'}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // Recent activity
+  const ra = document.getElementById('recentActivity');
+  const sorted = [...patients].filter(p=>p.last_date).sort((a,b)=>new Date(b.last_date)-new Date(a.last_date));
+  if (sorted.length === 0) {
+    ra.innerHTML = '<div class="empty"><div class="e-icon">📋</div><p>لا يوجد نشاط بعد</p></div>';
+  } else {
+    ra.innerHTML = sorted.slice(0,5).map(p => {
+      const v = parseFloat(p.last_fasting);
+      const cls = v < 70 ? 's-low' : v <= 130 ? 's-normal' : v <= 250 ? 's-high' : 's-vhigh';
+      const d = new Date(p.last_date);
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openPatient(${p.id})">
+        <span style="font-size:20px">👤</span>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700">${p.name}</div><div style="font-size:11px;color:var(--muted)">${d.toLocaleDateString('ar-EG')}</div></div>
+        <span class="sugar-badge ${cls}">${v || '--'}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ══════════════════════════════════════════════
+//  PATIENTS LIST
+// ══════════════════════════════════════════════
+function renderPatients() {
+  const el = document.getElementById('patientList');
+  if (patients.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="e-icon">👥</div><p>لا يوجد مرضى بعد — ابدأ بإضافة مريض</p></div>';
+    return;
+  }
+
+  const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  el.innerHTML = patients.map(p => {
+    const avg = parseFloat(p.avg7);
+    const lastDate = p.last_date ? new Date(p.last_date) : null;
+    const isInactive = !lastDate || lastDate < sevenDaysAgo;
+    const sugarCls = !avg ? '' : avg < 70 ? 's-low' : avg <= 180 ? 's-normal' : avg <= 250 ? 's-high' : 's-vhigh';
+    const needsAlert = avg && (avg < 70 || avg > 250);
+    const dtypeLabel = p.dtype === 'type1' ? 'النوع الأول' : p.dtype === 'type2' ? 'النوع الثاني' : 'سكري';
+    const genderIcon = p.gender === 'female' ? '👩' : '👨';
+    const initials = (p.name || '?').charAt(0);
+    const lastDateStr = lastDate ? lastDate.toLocaleDateString('ar-EG') : 'لا قراءات';
+
+    return `<div class="patient-row" onclick="openPatient(${p.id})">
+      ${needsAlert ? '<div class="alert-dot"></div>' : ''}
+      <div class="patient-avatar">${initials}</div>
+      <div class="patient-info">
+        <div class="patient-name">${genderIcon} ${p.name} <span style="font-size:11px;color:var(--muted);font-weight:400">(${p.username})</span></div>
+        <div class="patient-meta">
+          ${dtypeLabel}
+          ${p.diag_year ? ' · تشخيص ' + p.diag_year : ''}
+          ${p.weight ? ' · ' + p.weight + ' كجم' : ''}
+          ${isInactive ? ' · <span style="color:var(--orange);font-weight:700">⚠️ غير نشط</span>' : ''}
+        </div>
+      </div>
+      <div class="patient-stats">
+        <div class="p-stat">
+          <div class="p-stat-val" style="color:var(--muted);font-size:12px">${lastDateStr}</div>
+          <div class="p-stat-lbl">آخر قراءة</div>
+        </div>
+        <div class="p-stat">
+          <div class="sugar-badge ${sugarCls}">${avg ? avg.toFixed(0) : '--'}</div>
+          <div class="p-stat-lbl">متوسط 7 أيام</div>
+        </div>
+        <div class="p-stat">
+          <div class="p-stat-val" style="color:var(--primary)">${p.total_records || 0}</div>
+          <div class="p-stat-lbl">إجمالي السجلات</div>
+        </div>
+      </div>
+      <div class="patient-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-sm btn-ghost" onclick="confirmUnlink(${p.id}, '${p.name}')">فك ربط</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function linkPatient() {
+  const username = document.getElementById('addPatientInput').value.trim();
+  if (!username) { toast('⚠️ اكتب اسم مستخدم المريض'); return; }
+  const { ok, data } = await api('link_patient', 'POST', { patient_username: username });
+  if (ok && data.ok) {
+    toast(`✅ تم ربط المريض: ${data.patient.name}`);
+    document.getElementById('addPatientInput').value = '';
+    await loadPatients();
+    renderPatients();
+    renderDashboard();
+  } else {
+    toast('❌ ' + (data.error || 'حصل خطأ'));
+  }
+}
+
+function confirmUnlink(pid, name) {
+  if (!confirm(`هل تريد فك ربط المريض "${name}"؟`)) return;
+  api('unlink_patient', 'POST', { patient_id: pid }).then(({ ok }) => {
+    if (ok) { toast('تم فك الربط'); loadPatients().then(() => renderPatients()); }
+  });
+}
+
+// ══════════════════════════════════════════════
+//  PATIENT DETAIL
+// ══════════════════════════════════════════════
+async function openPatient(pid) {
+  currentPatientId = pid;
+  nav('patient-detail');
+  const el = document.getElementById('patientDetailContent');
+  el.innerHTML = '<div style="text-align:center;padding:40px"><div class="loader"></div></div>';
+
+  const [{ data: p }, { data: records }, { data: notes }] = await Promise.all([
+    api(`patient&uid=${pid}`),
+    api(`records&uid=${pid}&limit=30`),
+    api(`notes&uid=${pid}`)
+  ]);
+
+  currentPatient = p;
+  el.innerHTML = buildPatientDetail(p, records, notes);
+
+  // render chart
+  if (Array.isArray(records) && records.length > 0) renderPatientChart(records);
+}
+
+function buildPatientDetail(p, records, notes) {
+  const age = p.dob ? Math.floor((new Date() - new Date(p.dob)) / 31557600000) : null;
+  const dtypeTxt = p.dtype === 'type1' ? 'النوع الأول' : p.dtype === 'type2' ? 'النوع الثاني' : 'سكري';
+
+  const rec = Array.isArray(records) ? records : [];
+  const avgFast = rec.length ? (rec.reduce((s,r)=>s+(parseFloat(r.fasting)||0),0)/rec.filter(r=>r.fasting).length).toFixed(1) : '--';
+  const avgAfterF = rec.length ? (rec.reduce((s,r)=>s+(parseFloat(r.after_f)||0),0)/rec.filter(r=>r.after_f).length).toFixed(1) : '--';
+  const maxFast = rec.length ? Math.max(...rec.map(r=>parseFloat(r.fasting)||0)).toFixed(0) : '--';
+  const minFast = rec.length ? Math.min(...rec.filter(r=>r.fasting).map(r=>parseFloat(r.fasting))).toFixed(0) : '--';
+
+  const noteItems = Array.isArray(notes) ? notes : [];
+  const noteTypes = { general:'عامة', diet:'غذائي', insulin:'إنسولين', warning:'تحذير', lab:'مختبر' };
+  const noteClasses = { general:'note-general', diet:'note-diet', insulin:'note-insulin', warning:'note-warning', lab:'note-lab' };
+  const noteBadges  = { general:'nt-general', diet:'nt-diet', insulin:'nt-insulin', warning:'nt-warning', lab:'nt-lab' };
+
+  return `
+  <div class="patient-header">
+    <div class="ph-avatar">👤</div>
+    <div class="ph-info">
+      <h2>${p.name || 'مريض'}</h2>
+      <p>@${p.username} ${age ? '· ' + age + ' سنة' : ''} ${p.gender === 'female' ? '· أنثى' : p.gender === 'male' ? '· ذكر' : ''}</p>
+      <div class="ph-tags">
+        <span class="ph-tag">${dtypeTxt}</span>
+        ${p.diag_year ? `<span class="ph-tag">تشخيص ${p.diag_year}</span>` : ''}
+        ${p.weight ? `<span class="ph-tag">${p.weight} كجم</span>` : ''}
+        ${p.height ? `<span class="ph-tag">${p.height} سم</span>` : ''}
+        ${p.phone ? `<span class="ph-tag">📞 ${p.phone}</span>` : ''}
+        ${p.conditions ? `<span class="ph-tag">⚕️ ${p.conditions}</span>` : ''}
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-shrink:0">
+      <button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)" onclick="openGoalsModal()">🎯 أهداف</button>
+      <button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)" onclick="openNoteModal()">📝 توصية</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+    <div class="stat-card sc-blue"><div class="stat-label">متوسط صائم</div><div class="stat-value">${avgFast}</div><div class="stat-sub">mg/dL</div></div>
+    <div class="stat-card sc-orange"><div class="stat-label">متوسط بعد أكل</div><div class="stat-value">${avgAfterF}</div><div class="stat-sub">mg/dL</div></div>
+    <div class="stat-card sc-red"><div class="stat-label">أعلى قراءة</div><div class="stat-value">${maxFast}</div><div class="stat-sub">mg/dL</div></div>
+    <div class="stat-card sc-green"><div class="stat-label">أقل قراءة</div><div class="stat-value">${minFast}</div><div class="stat-sub">mg/dL</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="detail-tabs">
+    <button class="dtab active" onclick="switchDTab('records')">📋 سجلات السكر</button>
+    <button class="dtab" onclick="switchDTab('chart')">📈 المنحنى</button>
+    <button class="dtab" onclick="switchDTab('notes')">📝 التوصيات</button>
+    <button class="dtab" onclick="switchDTab('info')">👤 بيانات المريض</button>
+    <button class="dtab" onclick="switchDTab('goals')">🎯 الأهداف الحالية</button>
+  </div>
+
+  <!-- Records Tab -->
+  <div class="dtab-panel active" id="dp-records">
+    <div class="card">
+      <div class="card-body">
+        ${rec.length === 0 ? '<div class="empty"><div class="e-icon">📋</div><p>لا يوجد سجلات بعد</p></div>' :
+          `<div class="table-wrap"><table>
+            <thead><tr><th>التاريخ</th><th>صائم</th><th>جرعة ف</th><th>بعد فطار</th><th>قبل غدا</th><th>جرعة غ</th><th>بعد غدا</th><th>قبل عشا</th><th>جرعة ع</th><th>بعد عشا</th><th>نوم</th><th>إجمالي جرعة</th></tr></thead>
+            <tbody>
+              ${rec.map(r => {
+                const fv = parseFloat(r.fasting);
+                const fc = fv<70?'var(--red)':fv<=130?'var(--green)':fv<=250?'var(--orange)':'var(--red)';
+                return `<tr>
+                  <td><strong>${new Date(r.record_date).toLocaleDateString('ar-EG')}</strong></td>
+                  <td><strong style="color:${fc}">${r.fasting||'--'}</strong></td>
+                  <td>${r.dose_f||'--'}</td>
+                  <td>${r.after_f||'--'}</td>
+                  <td>${r.before_l||'--'}</td>
+                  <td>${r.dose_l||'--'}</td>
+                  <td>${r.after_l||'--'}</td>
+                  <td>${r.before_d||'--'}</td>
+                  <td>${r.dose_d||'--'}</td>
+                  <td>${r.after_d||'--'}</td>
+                  <td>${r.sleep||'--'}</td>
+                  <td><strong>${r.total_insulin||'--'}</strong></td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table></div>`}
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart Tab -->
+  <div class="dtab-panel" id="dp-chart">
+    <div class="card">
+      <div class="card-header"><div class="card-title">📈 منحنى قراءات الصائم — آخر 30 يوم</div></div>
+      <div class="card-body">
+        <div class="chart-wrap" id="patientChart"></div>
+        <div style="display:flex;gap:16px;margin-top:12px;font-size:11px;font-weight:700">
+          <span style="color:var(--green)">■ طبيعي (70-130)</span>
+          <span style="color:var(--orange)">■ مرتفع (130-250)</span>
+          <span style="color:var(--red)">■ عالي جداً (+250) / منخفض</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Tab -->
+  <div class="dtab-panel" id="dp-notes">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📝 التوصيات والملاحظات</div>
+        <button class="btn btn-sm btn-primary" onclick="openNoteModal()">+ إضافة</button>
+      </div>
+      <div class="card-body">
+        ${noteItems.length === 0 ?
+          '<div class="empty"><div class="e-icon">📝</div><p>لا يوجد توصيات بعد</p></div>' :
+          `<div class="note-list">${noteItems.map(n => `
+            <div class="note-item ${noteClasses[n.type]||'note-general'}">
+              <button class="note-del" onclick="deleteNote(${n.id})">🗑️</button>
+              <div class="note-text">
+                <span class="note-type-badge ${noteBadges[n.type]||'nt-general'}">${noteTypes[n.type]||'عامة'}</span>
+                ${n.note}
+              </div>
+              <div class="note-meta">${new Date(n.created_at).toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'})}</div>
+            </div>`).join('')}</div>`
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Tab -->
+  <div class="dtab-panel" id="dp-info">
+    <div class="card">
+      <div class="card-header"><div class="card-title">👤 بيانات المريض</div></div>
+      <div class="card-body">
+        <div class="form-row form-row-3">
+          <div><label style="font-size:10px;color:var(--muted);font-weight:700">الاسم</label><p style="font-weight:700;margin-top:4px">${p.name||'--'}</p></div>
+          <div><label style="font-size:10px;color:var(--muted);font-weight:700">تاريخ الميلاد</label><p style="font-weight:700;margin-top:4px">${p.dob||'--'}</p></div>
+          <div><label style="font-size:10px;color:var(--muted);font-weight:700">النوع</label><p style="font-weight:700;margin-top:4px">${p.gender==='male'?'ذكر':p.gender==='female'?'أنثى':'--'}</p></div>
+          <div><label style="font-size:10px;color:var(--muted);font-weight:700">الوزن</label><p style="font-weight:700;margin-top:4px">${p.weight?p.weight+' كجم':'--'}</p></div>
+          <div><label style="font-size:10px;color:var(--muted);font-weight:700">الطول</label><p style="font-weight:700;margin-top:4px">${p.height?p.height+' سم':'--'}</p></div>
+          <div><label style="font-size:10px;color:var(--muted);font-weight:700">سنة التشخيص</label><p style="font-weight:700;margin-top:4px">${p.diag_year||'--'}</p></div>
+          <div><label style="font-size:10px;color:var(--muted);font-weight:700">الموبايل</label><p style="font-weight:700;margin-top:4px">${p.phone||'--'}</p></div>
+          <div><label style="font-size:10px;color:var(--muted);font-weight:700">نوع السكري</label><p style="font-weight:700;margin-top:4px">${dtypeTxt}</p></div>
+          <div><label style="font-size:10px;color:var(--muted);font-weight:700">HbA1c أخير</label><p style="font-weight:700;margin-top:4px">${p.hba1c||'--'} ${p.hba1c?'%':''}</p></div>
+        </div>
+        ${p.conditions ? `<div style="margin-top:14px"><label style="font-size:10px;color:var(--muted);font-weight:700">أمراض مزمنة أخرى</label><p style="margin-top:4px;font-size:13px">${p.conditions}</p></div>` : ''}
+        ${p.allergies ? `<div style="margin-top:10px"><label style="font-size:10px;color:var(--muted);font-weight:700">حساسيات</label><p style="margin-top:4px;font-size:13px">${p.allergies}</p></div>` : ''}
+      </div>
+    </div>
+  </div>
+
+  <!-- Goals Tab -->
+  <div class="dtab-panel" id="dp-goals">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🎯 الأهداف العلاجية الحالية</div>
+        <button class="btn btn-sm btn-primary" onclick="openGoalsModal()">تعديل</button>
+      </div>
+      <div class="card-body">
+        <div class="goals-grid">
+          <div class="goal-box"><label>صائم — الأدنى</label><div style="font-size:22px;font-weight:900;color:var(--primary-dark)">${p.fast_min||70} <small style="font-size:12px;font-weight:400">mg/dL</small></div></div>
+          <div class="goal-box"><label>صائم — الأقصى</label><div style="font-size:22px;font-weight:900;color:var(--primary-dark)">${p.fast_max||130} <small style="font-size:12px;font-weight:400">mg/dL</small></div></div>
+          <div class="goal-box"><label>بعد الأكل — الأقصى</label><div style="font-size:22px;font-weight:900;color:var(--primary-dark)">${p.post_max||180} <small style="font-size:12px;font-weight:400">mg/dL</small></div></div>
+          <div class="goal-box"><label>تنبيه انخفاض</label><div style="font-size:22px;font-weight:900;color:var(--red)">${p.low_alert||70} <small style="font-size:12px;font-weight:400">mg/dL</small></div></div>
+          <div class="goal-box"><label>تنبيه ارتفاع</label><div style="font-size:22px;font-weight:900;color:var(--orange)">${p.high_alert||250} <small style="font-size:12px;font-weight:400">mg/dL</small></div></div>
+          <div class="goal-box"><label>HbA1c المستهدف</label><div style="font-size:22px;font-weight:900;color:var(--green)">${p.hba1c||'--'} <small style="font-size:12px;font-weight:400">%</small></div></div>
+        </div>
+        <div style="margin-top:14px">
+          ${p.activity ? `<p style="font-size:13px"><strong>النشاط الجسدي:</strong> ${p.activity}</p>` : ''}
+          ${p.goal_weight ? `<p style="font-size:13px;margin-top:6px"><strong>وزن الهدف:</strong> ${p.goal_weight} كجم</p>` : ''}
+          ${p.bp ? `<p style="font-size:13px;margin-top:6px"><strong>ضغط الدم:</strong> ${p.bp}</p>` : ''}
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function switchDTab(tab) {
+  document.querySelectorAll('.dtab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.dtab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('dp-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'chart') renderPatientChart();
+}
+
+function renderPatientChart(records) {
+  const el = document.getElementById('patientChart');
+  if (!el) return;
+  const rec = records || [];
+  const sorted = [...rec].reverse().slice(-20);
+  if (sorted.length === 0) { el.innerHTML = '<p style="color:var(--muted);font-size:12px">لا يوجد بيانات</p>'; return; }
+
+  const max = Math.max(...sorted.map(r => parseFloat(r.fasting)||0), 300);
+  el.innerHTML = sorted.map(r => {
+    const v = parseFloat(r.fasting) || 0;
+    const pct = Math.max(4, (v / max) * 100);
+    const color = v < 70 ? 'var(--red)' : v <= 130 ? 'var(--green)' : v <= 250 ? 'var(--orange)' : 'var(--red)';
+    const d = new Date(r.record_date);
+    return `<div class="bar-col" title="${v} mg/dL">
+      <div class="bar-val" style="color:${color};font-size:8px">${v||''}</div>
+      <div class="bar" style="height:${pct}%;background:${color}"></div>
+      <div class="bar-lbl">${d.getDate()}/${d.getMonth()+1}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+//  ALERTS PAGE
+// ══════════════════════════════════════════════
+function renderAlerts() {
+  const el = document.getElementById('alertsList');
+  const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const alertPatients = patients.filter(p => {
+    const avg = parseFloat(p.avg7);
+    const lastDate = p.last_date ? new Date(p.last_date) : null;
+    const isInactive = !lastDate || lastDate < sevenDaysAgo;
+    return isInactive || (avg && (avg < 70 || avg > 250)) || (!avg && p.total_records > 0);
+  });
+
+  if (alertPatients.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="e-icon">✅</div><p>كل المرضى بخير — لا تنبيهات عاجلة</p></div>';
+    return;
+  }
+
+  el.innerHTML = alertPatients.map(p => {
+    const avg = parseFloat(p.avg7);
+    const lastDate = p.last_date ? new Date(p.last_date) : null;
+    const sevenAgo = new Date(); sevenAgo.setDate(sevenAgo.getDate() - 7);
+    const isInactive = !lastDate || lastDate < sevenAgo;
+    const isHigh = avg > 250;
+    const isLow = avg < 70;
+    let alertMsg = '';
+    let alertCls = '';
+    if (isInactive) { alertMsg = '⚠️ لم يسجل منذ أكثر من 7 أيام'; alertCls = 'alert-warning'; }
+    else if (isHigh) { alertMsg = '🚨 متوسط السكر مرتفع جداً (+250)'; alertCls = 'alert-danger'; }
+    else if (isLow)  { alertMsg = '🚨 متوسط السكر منخفض جداً (-70)';  alertCls = 'alert-danger'; }
+
+    return `<div class="card" style="margin-bottom:12px">
+      <div class="card-body" style="display:flex;align-items:center;gap:14px">
+        <div class="patient-avatar">${(p.name||'?').charAt(0)}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:800">${p.name}</div>
+          <div class="alert ${alertCls}" style="margin-top:8px;margin-bottom:0">${alertMsg}</div>
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="openPatient(${p.id})">عرض المريض</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+//  MODALS
+// ══════════════════════════════════════════════
+function openNoteModal() {
+  document.getElementById('noteText').value = '';
+  document.getElementById('noteType').value = 'general';
+  openModal('noteModal');
+}
+
+async function submitNote() {
+  const note = document.getElementById('noteText').value.trim();
+  const type = document.getElementById('noteType').value;
+  if (!note) { toast('⚠️ اكتب الملاحظة'); return; }
+  const { ok, data } = await api('add_note', 'POST', { patient_id: currentPatientId, note, type });
+  if (ok && data.ok) {
+    closeModal('noteModal');
+    toast('✅ تم حفظ التوصية');
+    openPatient(currentPatientId);
+  } else toast('❌ ' + (data.error || 'حصل خطأ'));
+}
+
+function openGoalsModal() {
+  const p = currentPatient || {};
+  document.getElementById('g-fast-min').value   = p.fast_min   || 70;
+  document.getElementById('g-fast-max').value   = p.fast_max   || 130;
+  document.getElementById('g-post-max').value   = p.post_max   || 180;
+  document.getElementById('g-low-alert').value  = p.low_alert  || 70;
+  document.getElementById('g-high-alert').value = p.high_alert || 250;
+  document.getElementById('g-hba1c').value      = p.hba1c      || '';
+  document.getElementById('g-activity').value   = p.activity   || '';
+  document.getElementById('g-weight').value     = p.goal_weight|| '';
+  openModal('goalsModal');
+}
+
+async function submitGoals() {
+  const body = {
+    patient_id: currentPatientId,
+    fast_min:   document.getElementById('g-fast-min').value,
+    fast_max:   document.getElementById('g-fast-max').value,
+    post_max:   document.getElementById('g-post-max').value,
+    low_alert:  document.getElementById('g-low-alert').value,
+    high_alert: document.getElementById('g-high-alert').value,
+    hba1c:      document.getElementById('g-hba1c').value,
+    activity:   document.getElementById('g-activity').value,
+    weight:     document.getElementById('g-weight').value,
+  };
+  const { ok, data } = await api('set_goals', 'POST', body);
+  if (ok && data.ok) { closeModal('goalsModal'); toast('✅ تم حفظ الأهداف'); openPatient(currentPatientId); }
+  else toast('❌ ' + (data.error || 'حصل خطأ'));
+}
+
+async function deleteNote(nid) {
+  if (!confirm('حذف هذه التوصية؟')) return;
+  const r = await fetch(`${API_BASE}?action=note&id=${nid}`, { method: 'DELETE', credentials: 'include' });
+  if (r.ok) { toast('تم الحذف'); openPatient(currentPatientId); }
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ══════════════════════════════════════════════
+//  PROFILE
+// ══════════════════════════════════════════════
+async function loadProfile() {
+  if (!doctor) return;
+  document.getElementById('pf-name').value     = doctor.name      || '';
+  document.getElementById('pf-specialty').value= doctor.specialty || '';
+  document.getElementById('pf-clinic').value   = doctor.clinic    || '';
+  document.getElementById('pf-phone').value    = doctor.phone     || '';
+}
+
+function saveProfile() {
+  toast('✅ تم حفظ البيانات (قيد التطوير)');
+}
+
+// ══════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+checkSession();
+</script>
+</body>
+</html>
